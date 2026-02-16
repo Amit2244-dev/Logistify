@@ -1,0 +1,33 @@
+.card-outer {
+  /*border: 1px solid green; */
+  /* padding: 10px 20px; */
+  border-radius: 8px;
+  background-color: #F8F7FA;
+  height: calc(100% - 16px);
+  /* box-shadow: 0px 12px 45px -4px #2C224C0D;
+  box-shadow: 0px 8px 20px -6px #2C224C0D; */
+}
+.card-inner {
+  height: calc(100% - 95px);
+}
+
+::ng-deep .mat-mdc-tab-group .mat-mdc-tab {
+  flex: 0 1 auto !important;
+}
+
+::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+    color: #9810fa !important;
+}
+
+
+::ng-deep .mdc-tab__text-label {
+  font-weight: 600;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  background-color: #fff !important;
+}
+
+::ng-deep .mdc-tab-indicator .mdc-tab-indicator__content {
+  border-color: #9810fa !important;
+}

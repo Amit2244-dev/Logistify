@@ -1,0 +1,63 @@
+<div class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg mx-4 overflow-y-auto max-h-[91vh]">
+    <div class="flex items-center justify-between mt-[-10px]">
+      <div class="flex-1 flex justify-center items-center px-6 py-2">
+        <h3 class="text-[16px] font-semibold text-gray-800">Upload Files</h3>
+      </div>
+      <button mat-icon-button class="cursor-pointer" (click)="close()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    @if (isloading) {
+    <div class="flex justify-center py-6">
+      <mat-spinner [diameter]="50" class="custom-spinner"></mat-spinner>
+    </div>
+    }
+
+    <div *ngIf="!isloading"
+      class="border-2 border-dashed border-gray-300 p-6 rounded-lg text-center bg-gray-50 transition-all duration-300"
+      [ngClass]="{'border-blue-500 bg-blue-50': isDragging}" (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
+
+      <div class="max-w-md mx-auto">
+        <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.txt,.xls,.xlsx,.csv"
+          (change)="onFileSelected($event)" class="hidden">
+
+        <div class="my-5">
+          <p class="mb-3 text-[16px]">Drag and drop files here or</p>
+          <button class="bg-[#9810fa] text-white px-4 py-2 rounded text-[16px] cursor-pointer hover:bg-[#68219b]"
+            (click)="triggerFileInput()">
+            Browse Files
+          </button>
+        </div>
+
+        <div class="mt-5 text-left" *ngIf="files.length">
+          <h4 class="font-semibold text-[16px] mb-2">Selected Files:</h4>
+          <ul>
+            <li class="text-[13px] py-1" *ngFor="let file of files; let i = index">
+              <div class="bg-gray-100 text-[13px] px-2 rounded py-1 flex justify-between shadow-sm">
+                <div class="flex items-center text-blue-600">
+                  <mat-icon class="!text-xl mr-1">insert_drive_file</mat-icon>
+                  <span>
+                    {{ file.name }} ({{ formatFileSize(file.size) }})
+                  </span>
+                </div>
+                <mat-icon class="!text-xl mr-1 cursor-pointer" (click)="removeFiles(i)">close</mat-icon>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="errorMessage" class="bg-gray-100 text-[13px] px-2 rounded py-2 flex justify-between shadow-sm">
+      <div class="text-red-500 mt-3 text-[13px] text-center">
+        {{ errorMessage }}
+      </div>
+    </div>
+    <div class="pt-2 mb-[-10px] flex justify-start items-center border-gray-300">
+      <button class="px-3 py-1 rounded cursor-pointer bg-[#9810fa] text-[#fff]" (click)="onSubmit()" [disabled]="isloading">
+        <span>Save</span>
+      </button>
+    </div>
+  </div>
+</div>

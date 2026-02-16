@@ -1,0 +1,26 @@
+::ng-deep .custom-icon.mat-icon {
+  color: white !important; /* Force white fill for SVG */
+}
+
+.animate-ellipsis-dot {
+    animation: 1s cubic-bezier(.23, 1.5, .54, 1) infinite ellipsisDot;
+}
+
+@keyframes ellipsisDot {
+
+0%,
+100% {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+50% {
+    opacity: .65;
+    transform: translateY(-2px);
+}
+}
+
+::ng-deep .quill-rtl .ql-editor {
+  direction: rtl;
+  text-align: right;
+}

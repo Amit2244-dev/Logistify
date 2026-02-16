@@ -1,0 +1,49 @@
+<div class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-3xl mx-4 overflow-y-auto max-h-[90vh]">
+
+        <!-- Close Button -->
+        <div class="flex justify-end -mt-2">
+            <button mat-icon-button type="button" (click)="onClose()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        <!-- Modal Title -->
+        <h2 class="text-[16px] font-semibold text-center mb-6">File Details</h2>
+
+        <!-- Summary Section -->
+        <div class="mb-6">
+            <h3 class="text-[16px] font-semibold mb-2">Summary</h3>
+            <div class="bg-gray-100 rounded p-4 text-sm text-gray-800 leading-relaxed">
+                <span class=" text-[13px] ">
+                    {{initialData.aiGeneratedResponse}}
+                </span>
+            </div>
+        </div>
+
+        <!-- File Section -->
+        <div>
+            <h3 class="text-[16px] font-semibold mb-2">File</h3>
+            <div class="bg-gray-100 rounded p-3 text-sm text-gray-800 leading-relaxed flex text-center justify-between">
+                <span class="text-[#1784f2] text-[13px] hover:underline cursor-pointer mt-1"
+                    (click)="onFileClick(initialData.s3FileName)">
+                    {{initialData.fileName}}
+                </span>
+                <div>
+                    <button class="px-3 py-1 rounded cursor-pointer bg-[#9810fa] text-[#fff]"
+                        (click)="onFileClick(initialData.s3FileName)">
+                        <span>View File</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div *ngIf="isloading" class="flex justify-center items-center absolute h-full w-full bg-[#33333399] top-0 left-0">
+        <ng-container >
+            <div class="flex justify-center py-6">
+                <mat-spinner [diameter]="50" class="custom-spinner"></mat-spinner>
+            </div>
+        </ng-container>
+    </div>
+</div>

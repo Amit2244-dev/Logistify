@@ -1,0 +1,96 @@
+<div class="fixed inset-0 flex items-start sm:items-center justify-center z-50 bg-[black/50] backdrop-blur-md">
+  <div class="max-h-screen w-full sm:w-auto overflow-y-auto rounded-[10px]">
+    <div
+      class="bg-[#2c2155] sm:w-[400px] w-[calc(100%-30px)] mt-[80px] mb-[15px] sm:mt-0 rounded-[10px] shadow-lg relative min-h-[414px] text-center mx-auto">
+
+      <div class="px-4 pb-5 pt-5 sm:p-5">
+        <h1 class="text-[22px] font-[600] leading-[33px] sm:text-[28px] sm:leading-[42px] text-[#fff] mt-6">Login</h1>
+        <p class="text-sm text-[#FFFFFF66] mt-1">Login Here Using Email & Password</p>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="mt-6">
+          <!-- Email -->
+          <div class="mt-4 text-left">
+            <label class="block text-[14px] font-[500] text-[#fff]">Email</label>
+            <div class="relative mt-1">
+              <input
+                type="email"
+                formControlName="email"
+                placeholder="Enter your email"
+                class="text-[14px] font-[300] w-full px-[10px] h-[38px] text-white bg-transparent focus:outline-none focus:ring-1 focus:ring-[#9810fa] input-brdr" />
+              <span class="material-icons absolute right-3 top-1/2 -translate-y-1/2 text-white">mail</span>
+            </div>
+
+            @if (loginForm.controls['email'].invalid && (loginForm.controls['email'].touched || formSubmitted)) {
+              <div class="text-red-500 text-sm mt-1">
+                Valid email is required
+              </div>
+            }
+          </div>
+
+          <!-- Password -->
+          <div class="mt-4 text-left">
+            <label class="block text-[14px] font-[500] text-[#fff]">Password</label>
+            <div class="relative mt-1">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="Enter your password"
+                class="text-[14px] font-[300] w-full px-[10px] h-[38px] text-white bg-transparent focus:outline-none focus:ring-1 focus:ring-[#9810fa] input-brdr" />
+              <span
+                class="material-icons absolute right-3 top-1/2 -translate-y-1/2 text-white cursor-pointer"
+                (click)="togglePasswordVisibility()">
+                {{ showPassword ? 'visibility_off' : 'visibility' }}
+              </span>
+            </div>
+
+            @if (loginForm.controls['password'].invalid && (loginForm.controls['password'].touched || formSubmitted)) {
+              <div class="text-red-500 text-sm mt-1">
+                Password must be at least 8 characters
+              </div>
+            }
+          </div>
+
+          <!-- Remember me -->
+          <div class="flex items-center space-x-2 mt-4">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              formControlName="rememberMe"
+              class="h-4 w-4 text-purple-600 cursor-pointer border-gray-300 rounded focus:ring-purple-500"
+              name="rememberMe" />
+            <label for="rememberMe" class="text-sm cursor-pointer text-[#fff] select-none">
+              Remember this computer
+            </label>
+          </div>
+
+          <!-- Submit -->
+          <div class="mt-3">
+            <button
+              type="submit"
+              [disabled]="isLoading"
+              class="flex w-full items-center justify-center h-12 px-3 rounded-[4px] cursor-pointer btn-secondary font-semibold text-[14px] text-[#fff]">
+              @if (isLoading) {
+                <mat-spinner [diameter]="24" class="white-custom-spinner"></mat-spinner>
+              } @else {
+                <span>Login</span>
+              }
+            </button>
+          </div>
+
+          <!-- Reset Password -->
+          <div class="flex flex-col items-center mt-4">
+            <a
+              class="text-sm text-white cursor-pointer hover:text-blue-500"
+              (click)="handleResetPassword()">
+              Reset Password?
+            </a>
+            <p class="text-sm font-light pt-3 text-[#FFFFFF66]">
+              You don't have an account?
+              <span class="text-white cursor-pointer hover:text-[#5D5BE2]" (click)="handleSignup()">Register</span>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

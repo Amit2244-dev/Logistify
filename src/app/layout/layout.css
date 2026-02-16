@@ -1,0 +1,45 @@
+:host {
+  display: block;
+  height: 100dvh;
+}
+
+.layout-container {
+  display: flex;
+  flex-direction: row;
+  height: 100dvh;
+}
+
+.app-sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  height: 100%;
+  background-color: #e8f0f5;
+  overflow: hidden;
+}
+
+.main-content {
+  flex-grow: 1;
+  background-color: #F8F7FA;
+  height: 100%;
+  overflow: hidden;
+  /* padding: 0px 32px; */
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 1075px) {
+  .main-content {
+    overflow: auto;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  ::ng-deep .mat-mdc-paginator .mat-mdc-paginator-range-actions .mat-mdc-paginator-range-label {
+    margin: 0 4px 0 0;
+  }
+
+  ::ng-deep .mat-mdc-paginator .mat-mdc-paginator-range-actions .mat-mdc-icon-button {
+    height: 32px !important;
+    width: 32px !important;
+    padding: 0px !important
+  }
+}

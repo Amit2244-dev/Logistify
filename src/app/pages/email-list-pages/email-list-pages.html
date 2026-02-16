@@ -1,0 +1,384 @@
+<div class="card-outer">
+  <div class="flex gap-4 justify-between items-center shadow-sm min-h-[54px] pl-5 pr-5 bg-white sticky top-0">
+    <p [ngClass]="{ 'md:pl-[10px] pl-[37px]': !toggelSidebar, 'pl-0': toggelSidebar }"
+      class="font-semibold text-[16px] text-[#2C224C] flex items-center gap-2">
+      Emails
+    </p>
+  </div>
+  <div>
+    <div class="md:px-[26px] px-[15px] pt-[45px] pb-2 card-inner">
+      <div class="border border-[#BABFC7] shadow-md rounded bg-white mb-2 md:mb-0 max-h-[calc(100dvh-192px)] overflow-auto">
+        <div>
+          @if (loading) {
+          <div class="flex justify-center py-6">
+            <mat-spinner [diameter]="50" class="custom-spinner"></mat-spinner>
+          </div>
+          }
+
+          @if (!loading) {
+          <div class="hidden md:block table-container h-full max-h-[73vh]">
+            <table mat-table [dataSource]="emails" matSort (matSortChange)="onSort($event)"
+              class="styled-table mat-elevation-z8" style="table-layout: fixed; width: 100%;">
+              @for (column of columns; track column.key) {
+              <ng-container [matColumnDef]="column.key">
+                <th class="!px-0" mat-header-cell *matHeaderCellDef [style.width.%]="column.width"
+                  style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                  <div class="flex gap-4 px-4 items-center justify-between"
+                    [ngClass]="{ 'py-[16px]': column.key === 'createdAt', 'py-[18px]': column.key !== 'createdAt' }">
+                    @if (column.sortable) {
+                    <span class="text-[13px] leading-[16px]" [mat-sort-header]="column.key">
+                      {{ column.label }}
+                    </span>
+                    }
+                    @if (column.key === 'createdAt') {
+                    <div class="flex gap-4">
+                      <button title="Refresh Email"
+                        class="flex justify-center items-center !h-5 !w-5 rounded cursor-pointer"
+                        (click)="refreshEmail()">
+                        <mat-icon class="!leading-[14px] !h-[12px] overflow-unset !w-4">autorenew</mat-icon>
+                      </button>
+                      <button mat-icon-button title="Open Filters"
+                        class="relative flex justify-center items-center cursor-pointer" (click)="hideShowFilters()">
+                        <mat-icon class="!leading-[14px] !h-[12px] overflow-unset !w-4">
+                          more_vert
+                        </mat-icon>
+                        @if(isFilterApplied){
+                        <span class="absolute top-[-2px] right-[-2px] block w-2 h-2 bg-red-700 rounded-full"></span>
+                        }
+                      </button>
+                    </div>
+                    }
+                  </div>
+                  @if(hideShowFilter){
+                  <div class="bg-[#babfc7] h-[1px]"></div>
+                  <div class="px-4 py-[10px] lowercase">
+                    @if(column.key === 'fromEmail'){
+                    <div>
+                      <mat-form-field appearance="fill" class="!w-[220px] max-w-[236px] !text-[13px]">
+                        <mat-select class="flex items-center" [ngClass]="{ 'capitalize': selectedEmailType === '' }"
+                          [(ngModel)]="selectedEmailType" name="emailType" (selectionChange)="onEmailTypeSelect()">
+                          @for (type of filteredEmailAccounts; track type.value) {
+                          <mat-option [value]="type.value">
+                            {{ type.viewValue | truncate: 12 }}
+                          </mat-option>
+                          }
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    }
+                    @if(column.key === 'subject'){
+                    <mat-form-field appearance="fill" class="custom-search-field w-full max-w-[236px]">
+                      <input matInput type="text" placeholder="Search" [formControl]="subjectSearchControl"
+                        (keyup.enter)="onSubjectSearchEnter()" class="placeholder:capitalize" />
+                      <button *ngIf="subjectSearchControl.value" matSuffix mat-icon-button aria-label="Clear"
+                        (click)="onClearSearch('subject')" class="cursor-pointer">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </mat-form-field>
+                    }
+                    @if(column.key === 'aiSummaryResponse'){
+                    <mat-form-field appearance="fill" class="custom-search-field w-full">
+                      <input matInput type="text" placeholder="Search" [formControl]="aiSummarySearchControl"
+                        (keyup.enter)="onAiSummarySearchEnter()" class="placeholder:capitalize" />
+                      <button *ngIf="aiSummarySearchControl.value" matSuffix mat-icon-button aria-label="Clear"
+                        (click)="onClearSearch('aiSummaryResponse')" class="cursor-pointer">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </mat-form-field>
+                    }
+                    @if(column.key === 'tags'){
+                    <div class="capitalize">
+                      <mat-form-field appearance="fill" class="!text-[13px]">
+                        <mat-select [(ngModel)]="selectedTags" name="tags" (selectionChange)="onTagSelect()">
+                          @for (type of filteredTags; track type.value) {
+                          <mat-option [value]="type.value">
+                            {{ type.viewValue }}
+                          </mat-option>
+                          }
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    }
+                    @if(column.key === 'status'){
+                    <div class="capitalize">
+                      <mat-form-field appearance="fill" class="!text-[13px]">
+                        <mat-select [(ngModel)]="selectedEmailStatus" name="emailStatus"
+                          (selectionChange)="onEmailStatusSelect()">
+                          @for (type of filteredEmailStatus; track type.value) {
+                          <mat-option [value]="type.value">
+                            {{ type.viewValue }}
+                          </mat-option>
+                          }
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    }
+                    @if(column.key === 'createdAt'){
+                    <div class="capitalize flex items-center w-full pr-0 gap-4">
+                      <mat-form-field appearance="fill">
+                        <mat-date-range-input [formGroup]="dateRange" [rangePicker]="picker">
+                          <input matStartDate formControlName="start" placeholder="Start" matInput />
+                          <input matEndDate formControlName="end" placeholder="End date" matInput />
+                        </mat-date-range-input>
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-date-range-picker #picker></mat-date-range-picker>
+                      </mat-form-field>
+                      <button mat-icon-button (click)="ClearAllFilters($event)" class="cursor-pointer"
+                        title="Clear Filters">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </div>
+                    }
+                  </div>
+                  }
+                </th>
+                <td mat-cell *matCellDef="let element"
+                  style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                  @switch (column.key) {
+                  @case ('fromEmail') { <span>{{ element.fromEmail | truncate: 20 }}</span> }
+                  @case ('subject') { <span>{{ element.subject | truncate: 20 }}</span> }
+                  @case ('aiSummaryResponse') { <span>{{ element.aiSummaryResponse | truncate: 70 }}</span> }
+                  @case ('tags') { <span class="capitalize">{{ element.tags | truncate: 80 }}</span> }
+                  @case ('status') { <span class="capitalize">{{ element.status | truncate: 80 }}</span> }
+                  @case ('createdAt') {
+                  <div class="relative">
+                    <span class="block group-hover:hidden">
+                      {{ element.createdAt | date: 'MMM dd, yyyy HH:mm' }}
+                    </span>
+                    <div class="hidden group-hover:flex justify-center gap-2 rounded">
+                      <button (click)="OpenViewEmail(element); $event.stopPropagation()" title="Reply"
+                        class="bg-[#9810fa] cursor-pointer text-white h-[28px] w-[28px] flex items-center justify-center rounded">
+                        <mat-icon class="!text-[20px]">reply</mat-icon>
+                      </button>
+                      <button (click)="archiveEmail(element); $event.stopPropagation()"
+                        [title]="element.isArchive ? 'Unarchive' : 'Archive'"
+                        class="bg-[#9810fa] cursor-pointer text-white h-[28px] w-[28px] flex items-center justify-center rounded">
+                        @if (element.isArchive) {
+                        <mat-icon class="!text-[24px]">unarchive</mat-icon>
+                        } @else {
+                        <mat-icon class="!text-[24px]">archive</mat-icon>
+                        }
+                      </button>
+                    </div>
+                  </div>
+                  }
+                  }
+                </td>
+              </ng-container>
+              }
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{ 'onSaveDraft': row.isArchive }"
+                class="group clickable-row hover:bg-gray-100" (click)="OpenViewEmail(row)">
+              </tr>
+            </table>
+          </div>
+
+          <div class="block md:hidden">
+            <div class="flex items-center justify-between p-4 bg-gray-50 border-b border-gray-300 flex-wrap gap-3">
+              <div class="text-[13px] text-gray-600">
+                {{ totalEmailsCount }} emails
+              </div>
+              <div class="flex items-center gap-3">
+                <button title="Refresh Email"
+                  class="flex justify-center items-center px-1 py-1 rounded bg-[#9810fa] text-white cursor-pointer hover:bg-gray-50"
+                  (click)="refreshEmail()">
+                  <mat-icon class="text-lg">autorenew</mat-icon>
+                </button>
+                <button mat-icon-button title="Open Filters"
+                  class="relative flex justify-center px-1 py-1 items-center rounded bg-[#9810fa] text-white cursor-pointer hover:bg-gray-50"
+                  (click)="hideShowFilters()">
+                  <mat-icon class="text-lg">filter_list</mat-icon>
+                  @if(isFilterApplied){
+                  <span class="absolute top-0 right-0 block w-2 h-2 bg-red-500 rounded-full"></span>
+                  }
+                </button>
+                <button
+                  class="flex items-center gap-2 py-1 px-1 bg-[#9810fa] text-white rounded cursor-pointer w-full md:w-auto justify-center md:justify-start"
+                  (click)="OpenNewEmail()">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            @if(hideShowFilter) {
+            <div class="p-4 bg-white border-b space-y-4">
+              <div>
+                <label class="block text-[13px] text-gray-700 mb-1">Email Account</label>
+                <mat-form-field appearance="fill" class="w-full">
+                  <mat-select [(ngModel)]="selectedEmailType" name="emailType" (selectionChange)="onEmailTypeSelect()">
+                    @for (type of filteredEmailAccounts; track type.value) {
+                    <mat-option [value]="type.value">
+                      {{ type.viewValue }}
+                    </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div>
+                <label class="block text-[13px] text-gray-700 mb-1">Subject</label>
+                <mat-form-field appearance="fill" class="w-full">
+                  <input matInput type="text" placeholder="Search subject" [formControl]="subjectSearchControl"
+                    (keyup.enter)="onSubjectSearchEnter()" />
+                  <button *ngIf="subjectSearchControl.value" matSuffix mat-icon-button aria-label="Clear"
+                    (click)="onClearSearch('subject')">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </mat-form-field>
+              </div>
+              <div>
+                <label class="block text-[13px] text-gray-700 mb-1">Tags</label>
+                <mat-form-field appearance="fill" class="w-full">
+                  <mat-select [(ngModel)]="selectedTags" name="tags" (selectionChange)="onTagSelect()">
+                    @for (type of filteredTags; track type.value) {
+                    <mat-option [value]="type.value">
+                      {{ type.viewValue }}
+                    </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div>
+                <label class="block text-[13px] text-gray-700 mb-1">Status</label>
+                <mat-form-field appearance="fill" class="w-full">
+                  <mat-select [(ngModel)]="selectedEmailStatus" name="emailStatus"
+                    (selectionChange)="onEmailStatusSelect()">
+                    @for (type of filteredEmailStatus; track type.value) {
+                    <mat-option [value]="type.value">
+                      {{ type.viewValue }}
+                    </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div>
+                <label class="block text-[13px] text-gray-700 mb-1">Date Range</label>
+                <mat-form-field appearance="fill" class="w-full">
+                  <mat-date-range-input [formGroup]="dateRange" [rangePicker]="mobilePicker">
+                    <input matStartDate formControlName="start" placeholder="Start date" matInput />
+                    <input matEndDate formControlName="end" placeholder="End date" matInput />
+                  </mat-date-range-input>
+                  <mat-datepicker-toggle matSuffix [for]="mobilePicker"></mat-datepicker-toggle>
+                  <mat-date-range-picker #mobilePicker></mat-date-range-picker>
+                </mat-form-field>
+              </div>
+              <div class="flex justify-end">
+                <button mat-button (click)="ClearAllFilters($event)"
+                  class="px-3 py-1 flex items-center rounded cursor-pointer bg-[#9810fa] text-[#fff]">
+                  <mat-icon>close</mat-icon>
+                  Clear All Filters
+                </button>
+              </div>
+            </div>
+            }
+
+            <div class="divide-y divide-gray-200">
+              @for (email of emails; track email) {
+              <div class="p-4 hover:bg-gray-50 cursor-pointer" (click)="OpenViewEmail(email)"
+                [ngClass]="{ 'bg-gray-100': email.isArchive }">
+                <div class="flex items-start justify-between">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between mb-1">
+                      <div class="text-[13px] text-gray-900 truncate">
+                        {{ email.fromEmail }}
+                      </div>
+                      <div class="text-xs text-gray-500 ml-2 flex-shrink-0">
+                        {{ email.createdAt | date: 'MMM d' }}
+                      </div>
+                    </div>
+                    <div class="text-[13px] text-gray-900 mb-1 truncate">
+                      {{ email.subject }}
+                    </div>
+                    <div class="text-[13px] text-gray-600 mb-2 line-clamp-1">
+                      {{ email.aiSummaryResponse }}
+                    </div>
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                      <div class="flex items-center space-x-2">
+                        @if (email.tags.length) {
+                        <span
+                          class="inline-flex items-center px-2 py-1 text-xs bg-blue-100 text-blue-800 capitalize truncate rounded">
+                          {{ email.tags.join(', ') | truncate:15 }}
+                        </span>
+                        }
+                        @if (email.status) {
+                        <span
+                          class="inline-flex items-center px-2 py-1 text-xs bg-green-100 text-green-800 capitalize rounded">
+                          {{ email.status }}
+                        </span>
+                        }
+                      </div>
+                      <div class="flex space-x-2 items-center">
+                        <button (click)="OpenViewEmail(email); $event.stopPropagation()" title="Reply"
+                          class="flex items-center justify-center text-white bg-[#9810fa] rounded hover:bg-purple-700 h-[30px] w-[30px]">
+                          <mat-icon>reply</mat-icon>
+                        </button>
+                        <button (click)="archiveEmail(email); $event.stopPropagation()"
+                          [title]="email.isArchive ? 'Unarchive' : 'Archive'"
+                          class="flex items-center justify-center text-white bg-[#9810fa] rounded hover:bg-purple-700 h-[30px] w-[30px]">
+                          @if (email.isArchive) {
+                          <mat-icon>unarchive</mat-icon>
+                          } @else {
+                          <mat-icon>archive</mat-icon>
+                          }
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+          }
+
+          @if (!checkNoAccountAddedYet && !totalEmailsCount && !loading) {
+          <div class="flex justify-center items-center p-4 gap-2">
+            <p>Your search did not return any results.</p>
+          </div>
+          }
+
+          @if (checkNoAccountAddedYet && !loading) {
+          <div class="flex justify-center items-center p-4 gap-2">
+            <p>No emails available. Please add an account to get started.</p>
+            <button class="bg-[#9810fa] text-white px-4 py-2 rounded cursor-pointer" (click)="toggleAddEmails()">
+              Add Account
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+
+      @if (totalEmailsCount) {
+      <mat-paginator [length]="totalEmailsCount" [pageSize]="filters.limit" [pageSizeOptions]="[5, 10, 20, 50]"
+        (page)="handlePageChange($event)" showFirstLastButtons>
+      </mat-paginator>
+      }
+    </div>
+
+    <div class="md:block hidden">
+      <div class="flex justify-end px-[26px] md:px-[26px]">
+        <button
+          class="flex items-center gap-2 px-4 py-2 bg-[#9810fa] text-white rounded cursor-pointer w-full md:w-auto justify-center md:justify-start"
+          (click)="OpenNewEmail()">
+          <mat-icon>add</mat-icon>
+          New Message
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (openSendEmailPopup) {
+<app-send-mail (onClose)="OnCloseViewEmail()"></app-send-mail>
+}
+
+@if (openReplyEmailPopup) {
+<app-reply-emails (onClose)="OnCloseViewEmail()" [allTagOptions]="allTagOptions" [emailData]="ViewEmailData"
+  (fetchallEmails)="fetchemailList()">
+</app-reply-emails>
+}
+
+@if (openWorningPopup) {
+<app-warning-popup title="Reconnect Email Accounts" (cancel)="onCancelAction()"
+  message="Please connect your email account to continue." (confirm)="onConfirmAction($event)">
+</app-warning-popup>
+}

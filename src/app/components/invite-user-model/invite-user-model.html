@@ -1,0 +1,62 @@
+<div class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg mx-4 overflow-y-auto max-h-[91vh] relative">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between relative pb-4">
+      <h2 class="text-[16px] font-semibold flex-1 text-center">
+        Send Invitation
+      </h2>
+      <button class="absolute -top-2 -right-2" mat-icon-button (click)="onClose()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="inviteForm" (ngSubmit)="onSubmit()" class="space-y-6">
+
+      <!-- Organization name -->
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Organization Name</mat-label>
+        <mat-select formControlName="organizationName" placeholder="Select Organization">
+          @for (option of organizationOptions; track option.id) {
+          <mat-option [value]="option.value">{{option.key}}</mat-option>
+          }
+        </mat-select>
+        @if (inviteForm.get('organizationName')?.touched && inviteForm.get('organizationName')?.invalid) {
+        <mat-error>Organization Name is required.</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- User email -->
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" placeholder="email@example.com" />
+        @if (inviteForm.get('email')?.touched && inviteForm.get('email')?.invalid) {
+        <mat-error>
+          @if (inviteForm.get('email')?.errors?.['required']) {
+          Email is required.
+          }
+          @if (inviteForm.get('email')?.errors?.['pattern']) {
+          Invalid email format.
+          }
+        </mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Submit button -->
+      <div class="text-center mt-4">
+        <button type="submit"
+          class="h-10 px-4 rounded-[4px] flex justify-center items-center cursor-pointer bg-[#9810fa] text-white">
+          <span>Send</span>
+        </button>
+      </div>
+    </form>
+
+    <!-- Loading overlay -->
+    @if (loading) {
+    <div class="flex justify-center items-center absolute h-full w-full bg-[#33333399] top-0 left-0 rounded-lg">
+      <mat-spinner [diameter]="50"></mat-spinner>
+    </div>
+    }
+  </div>
+</div>

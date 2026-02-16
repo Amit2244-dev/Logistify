@@ -1,0 +1,165 @@
+<div class="fixed inset-0 flex items-start sm:items-center justify-center z-[50] bg-[black/50] backdrop-blur-md"
+  (click)="handleClose()">
+  <div class="max-h-screen w-full md:h-auto h-screen sm:w-auto rounded-[10px]" (click)="$event.stopPropagation()">
+    <div
+      class="bg-[#2c2155] md:max-w-[900px] md:my-8 w-full h-full overflow-x-hidden overflow-y-auto sm:mt-0 md:rounded-[10px] rounded-none shadow-lg relative min-h-[414px] mx-auto">
+
+      <!-- Close Button -->
+      <button class="absolute top-[12px] md:right-5 hidden md:block  cursor-pointer !z-[9999]" (click)="handleClose()">
+        <mat-icon class="text-[#5D5BE2] !text-[16px]">
+          close
+        </mat-icon>
+      </button>
+
+      <button class="absolute top-[12px] md:right-5 block md:hidden cursor-pointer !z-[9999]" (click)="handleClose()">
+        <mat-icon class="text-[#5D5BE2] !text-[16px]">
+          arrow_back
+        </mat-icon>
+      </button>
+
+      <div class="mx-auto rounded-lg shadow-md border border-gray-200 bg-white md:h-auto h-screen overflow-auto">
+        <!-- Header -->
+        <div class="px-6 py-2 border-b border-gray-300 sticky top-0 bg-white">
+          <h3 class="text-[16px] font-semibold text-gray-800">New Message</h3>
+        </div>
+
+        <!-- Form -->
+        <div class="px-6 py-3 space-y-4 pb-[60px] overflow-auto ">
+          <!-- From -->
+          <div class="pt-0">
+            <div class="flex items-center gap-3">
+              <label class="text-[16px] text-gray-500 w-[60px]">From:</label>
+              <div class="relative w-full">
+                <mat-label [class.hidden]="fromEmail"
+                  class="flex absolute left-0 text-[#00000099] z-[1] mt-2 text-[13px]">
+                  Select email...
+                </mat-label>
+                <mat-form-field appearance="fill" class="w-full selectcss">
+                  <mat-select [(ngModel)]="fromEmail" name="emailType" #emailTypeSelect>
+                    @for (type of filteredEmailAccounts; track type) {
+                    <mat-option [value]="type.value">
+                      {{ type.viewValue }}
+                    </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- To -->
+            <div class="flex items-center mt-4 gap-2">
+              <label class="text-[16px] text-gray-500 w-[60px]">To:</label>
+              <div class="flex flex-wrap gap-2 border-b border-gray-300 flex-1">
+                @for (email of toEmails; track email) {
+                <span class="flex border-2 justify-center items-center px-3 rounded-full text-blue-500 text-[13px]">
+                  {{ email }}
+                  <span (click)="toEmails = removeEmail(toEmails, email)"
+                    class="ml-2 h-[25px] cursor-pointer hover:text-purple-900">
+                    <mat-icon>close</mat-icon>
+                  </span>
+                </span>
+                }
+                <input type="text" [(ngModel)]="newToInput"
+                  (keydown.enter)="toEmails = addEmail(toEmails, newToInput); newToInput=''" (focus)="onFocusToField()"
+                  placeholder="Please enter to email" class="flex-1 outline-none text-[13px] min-w-[180px]" />
+              </div>
+              @if (showCcBccOptions) {
+              <div class="ml-2 text-sm text-blue-700 cursor-pointer">
+                <button class="text-[16px]" (click)="toggleCc()">Cc</button>
+                <button class="text-[16px] ml-2" (click)="toggleBcc()">Bcc</button>
+              </div>
+              }
+            </div>
+
+            <!-- CC -->
+            @if (showCcField) {
+            <div class="flex items-center mt-4 gap-2">
+              <label class="text-[16px] text-gray-500 w-[60px]">Cc:</label>
+              <div class="flex flex-wrap gap-2 border-b border-gray-300 flex-1">
+                @for (email of ccEmails; track email) {
+                <span class="flex items-center px-3 border-2 rounded-full text-blue-500 text-sm">
+                  {{ email }}
+                  <span (click)="ccEmails = removeEmail(ccEmails, email)"
+                    class="ml-2 h-[25px] cursor-pointer hover:text-purple-900">
+                    <mat-icon>close</mat-icon>
+                  </span>
+                </span>
+                }
+                <input type="text" [(ngModel)]="newCcInput"
+                  (keydown.enter)="ccEmails = addEmail(ccEmails, newCcInput); newCcInput=''"
+                  placeholder="Please enter cc email" class="flex-1 outline-none text-[13px] min-w-[180px]" />
+              </div>
+            </div>
+            }
+
+            <!-- BCC -->
+            @if (showBccField) {
+            <div class="flex items-center mt-4 gap-2">
+              <label class="text-[16px] text-gray-500 w-[60px]">Bcc:</label>
+              <div class="flex flex-wrap gap-2 border-b border-gray-300 flex-1">
+                @for (email of bccEmails; track email) {
+                <span class="flex items-center border-2 px-3 rounded-full text-blue-500 text-[13px]">
+                  {{ email }}
+                  <span (click)="bccEmails = removeEmail(bccEmails, email)"
+                    class="ml-2 h-[25px] cursor-pointer hover:text-purple-900">
+                    <mat-icon>close</mat-icon>
+                  </span>
+                </span>
+                }
+                <input type="text" [(ngModel)]="newBccInput"
+                  (keydown.enter)="bccEmails = addEmail(bccEmails, newBccInput); newBccInput=''"
+                  placeholder="Please enter bcc email" class="flex-1 outline-none text-[13px] min-w-[180px]" />
+              </div>
+            </div>
+            }
+
+            <!-- Subject -->
+            <div class="flex items-center gap-2 mt-4">
+              <label class="text-[16px] text-gray-500 w-[60px]">Subject:</label>
+              <input type="text" [(ngModel)]="subject" placeholder="Please enter subject email"
+                class="flex-1 border-b text-[13px] border-gray-300 focus:outline-none focus:border-purple-500" />
+            </div>
+          </div>
+
+          <!-- Editor -->
+          <div class="relative">
+            <div>
+              <quill-editor #quillEditor [(ngModel)]="editorContent" [modules]="modules" [styles]="{ height: '300px' }"
+                class="border border-gray-300 !flex flex-col-reverse mt-[-1px]">
+              </quill-editor>
+              <input type="file" #fileInput style="display: none" (change)="onFileSelected($event)" multiple />
+            </div>
+            <div>
+              @if (attachments.length > 0) {
+              <div class="mt-2 flex flex-wrap gap-2">
+                @for (file of attachments; track file; let i = $index) {
+                <div class="bg-gray-100 text-[13px] px-2 rounded flex items-center shadow-sm">
+                  <mat-icon class="!text-xl mb-1 mr-1">insert_drive_file</mat-icon>
+                  <span>{{ file.name }}</span>
+                  <button (click)="removeAttachment(i)" class="text-red-500 ml-2 hover:text-red-700">
+                    <mat-icon class="mt-1 cursor-pointer">close</mat-icon>
+                  </button>
+                </div>
+                }
+              </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div
+          class="px-6 py-2 flex justify-between items-center border-t border-gray-300 absolute w-full bottom-0 bg-white">
+          <button class="px-3 py-1 rounded cursor-pointer bg-[#9810fa] text-[#fff]" (click)="sendEmail()">
+            <span>Send</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-center items-center absolute h-full w-full bg-[#33333399] top-0 left-0" *ngIf="isLoading">
+      <ng-container>
+        <mat-spinner [diameter]="50" class="custom-spinner"></mat-spinner>
+      </ng-container>
+    </div>
+  </div>
+</div>

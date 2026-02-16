@@ -1,0 +1,37 @@
+<div class="fixed inset-0 flex items-start sm:items-center justify-center z-50 bg-[black/50] backdrop-blur-md">
+    <div class="max-h-screen w-full sm:w-auto overflow-y-auto rounded-[10px]">
+        <div *ngIf="loading" class="flex justify-center py-6">
+            <mat-spinner [diameter]="50" class="custom-spinner"></mat-spinner>
+        </div>
+        <div *ngIf="!loading"
+            class="bg-[#2c2155] sm:w-[400px] w-[calc(100%-30px)] mt-[80px] mb-[15px] sm:mt-0 rounded-[10px] shadow-lg relative min-h-[314px] text-center mx-auto px-6 py-8">
+            <!-- Title -->
+            <h1 class="text-[22px] font-[600] leading-[33px] sm:text-[28px] sm:leading-[42px] mt-[10px] text-[#fff]">
+                @if(currentPath === 'verify-email'){
+                Email Verification
+                } @else {
+                Invited User Verification
+                }
+            </h1>
+
+            <!-- Icon -->
+            <div class="my-6 flex justify-center">
+                <img class="h-[40px] w-[48px]" [src]="sidebarTopBottom.logo" alt="logo" />
+            </div>
+
+            <!-- Message (only red or green) -->
+            <div class="text-sm px-4 py-2 rounded font-medium mb-6" [ngClass]="messageClass">
+                {{ message }}
+            </div>
+
+            <!-- Button -->
+            <button class="w-full bg-[#9810fa] cursor-pointer text-white font-semibold py-2 rounded-[4px]"
+                (click)="triggerLogin()">
+                Return to Login
+            </button>
+        </div>
+        <div *ngIf="isSignupOpen && !loading">
+            <app-signup (onClose)="isSignupOpen = false" (onLoginTrigger)="triggerLogin()" />
+        </div>
+    </div>
+</div>

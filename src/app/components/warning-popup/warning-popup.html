@@ -1,0 +1,49 @@
+<div class="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-md relative">
+    <div class="flex justify-between">
+      <div
+        class="text-[16px] font-semibold text-red-600 mb-4 py-2 pl-6 px-4 shadow-xs flex justify-items-start items-center">
+        <mat-icon>warning</mat-icon>
+        <span class="ml-4 text-[16px]">{{ title }}</span>
+      </div>
+      <div class="p-4">
+        <button (click)="onCancel()" title="Close"
+          class="cursor-pointer top-2 right-2 text-gray-500 hover:text-red-600 text-[13px] font-bold">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="mb-2 pl-6">
+      <p class="text-gray-800 mb-2 pt-2 pl-2">
+        {{ message }}
+      </p>
+
+      <div class="pr-6 pt-4" *ngIf="displayDD">
+        <mat-form-field appearance="fill" class="w-full max-w-md">
+          <mat-label>Select email provider type</mat-label>
+          <mat-select [(ngModel)]="selectedEmailType" name="emailType">
+            <mat-option *ngFor="let type of filteredEmailAccounts" [value]="type.value">
+              {{ type.viewValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error>
+            Please select an email provider.
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-center space-x-5 py-6 pr-6">
+        <button (click)="onCancel()" class="text-[16px] w-full py-2 cursor-pointer bg-gray-300 hover:bg-gray-400 rounded">
+          Cancel
+        </button>
+        <button (click)="onConfirm()" [disabled]="!selectedEmailType"
+          class="text-[16px] w-full py-2 cursor-pointer bg-red-600 text-white hover:bg-red-700 rounded">
+          OK
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

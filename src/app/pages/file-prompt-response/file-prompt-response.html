@@ -1,0 +1,133 @@
+<div class="card-outer">
+	<div class="flex gap-4 justify-between items-center shadow-sm min-h-[54px] pl-5 pr-5 bg-white sticky top-0">
+		<p [ngClass]="{ 'md:pl-[10px] pl-[37px]': !toggelSidebar, 'pl-0': toggelSidebar }"
+			class="font-semibold text-[16px] text-[#2C224C] flex items-center gap-2">
+			Knowledge Base
+		</p>
+	</div>
+	<div class="px-[26px] pt-[45px] pb-2 card-inner">
+		<!-- <div class="border border-[#BABFC7] shadow-md rounded bg-white">
+		</div> -->
+		<div class="w-full text-slate-100 flex gap-2 h-full">
+			<!-- Sidebar -->
+			<section *ngIf="isCollapsed"
+				class="bg-white rounded-[12px] border w-[300px] border-[#BABFC7] flex flex-col transition-all duration-300">
+				<!-- Header -->
+				<div
+					class="h-12 px-4 border-b border-[#BABFC7] rounded-t-[12px] bg-[#f8f8f8] flex items-center justify-between">
+					<h2 class="text-[16px] font-medium text-black">Source</h2>
+				</div>
+
+				<!-- New Chat -->
+				<div class="p-2">
+					<div class="flex items-center gap-2 cursor-pointer text-white p-2 rounded-[12px] bg-[#9810fa]"
+						(click)="startNewChat()">
+						<mat-icon>create</mat-icon>
+						<span class="text-[14px] font-medium">New Chat</span>
+					</div>
+				</div>
+
+				<!-- Chat Section -->
+				<div class="p-2 px-4 border-b rounded-t-[12px] border-[#BABFC7] bg-[#f8f8f8] flex items-center justify-between">
+					<h2 class="text-[16px] font-medium text-black">Chat</h2>
+				</div>
+
+				<!-- Messages -->
+				<div class="flex-1 overflow-auto p-2">
+					@if(loading){
+					<div class="flex justify-center items-center">
+						<mat-spinner [diameter]="25" class="custom-spinner"></mat-spinner>
+					</div>
+					} @else {
+					<div *ngFor="let msg of previousChatMessages" class="w-full flex mb-3 text-[13px]">
+						<div (click)="loadChat(msg)"
+							[ngClass]="msg._id === selectedChatId ? 'bg-[#9810fa] text-white' : 'text-black  bg-[#f8f8f8]'"
+							class=" w-full cursor-pointer rounded-xl px-4 py-2 max-w-[95%] shadow-sm leading-relaxed"
+							*ngIf="!isCollapsed && msg.messages[0].key !== ''">
+							{{ msg.messages[0].key | truncate: 30 }}
+						</div>
+					</div>
+					}
+				</div>
+			</section>
+
+			<!-- Chat area -->
+			<section class="flex-1 flex flex-col bg-white rounded-[12px] border border-[#BABFC7]">
+				<div class="h-12 px-4 border-b border-[#BABFC7] rounded-t-[12px] gap-2 bg-[#f8f8f8] flex items-center">
+					<mat-icon class="transform rotate-90 !text-[#484343] rounded-md cursor-pointer"
+						(click)="isCollapsed = !isCollapsed">
+						view_stream
+					</mat-icon>
+					<h2 class="text-[16px] font-medium text-black">Chat</h2>
+				</div>
+
+				<div class="flex-1 overflow-auto p-2 flex items-center justify-center text-gray-400 text-sm"
+					*ngIf="messages.length === 0">
+					<span>What’s on your mind today?</span>
+				</div>
+
+				<div class="flex-1 overflow-auto p-2" #scrollContainer *ngIf="messages.length > 0">
+					<div *ngFor="let msg of messages" class="w-full flex mb-3 text-[13px]">
+						<!-- Sender -->
+						<div *ngIf="msg.type === 'sender'" class="w-full">
+							@if (isLoading && msg.text === '') {
+							<div class="flex gap-4">
+								<span class="text-black"> Generating response </span>
+								<mat-spinner [diameter]="20" class="custom-spinner"></mat-spinner>
+							</div>
+							}
+							@else {
+							@if(msg.text !== '') {
+							<div
+								class="whitespace-pre-line max-w-[80%] bg-[#f8f8f8] text-black p-3 rounded-xl rounded-tl-none shadow-md">
+								{{ cleanText(msg.text) }}
+								<br>
+								<div *ngIf="msg?.data?.filename?.length">
+									<span>Here is the most relevant content file: </span>
+									<div *ngFor="let file of msg?.data?.filename">
+										<div class="mt-2 font-semibold text-[13px] cursor-pointer text-blue-600" (click)="viewFiles(file)">
+											{{ cleanFile(file) }}
+										</div>
+									</div>
+								</div>
+							</div>
+							}
+							}
+						</div>
+
+						<!-- Receiver -->
+						<div *ngIf="msg.type === 'receiver'"
+							class="max-w-[80%] bg-[#e6e6e6] text-black p-3 rounded-xl rounded-tr-none shadow-md ml-auto text-right">
+							<span class="text-right">{{ msg.text }}</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- Footer -->
+				<div class="p-2 rounded-b-[12px] bg-[#f8f8f8]">
+					<div class="mx-auto">
+						<div class="relative">
+							<!-- Auto-resizing Textarea -->
+							<!-- <textarea autoResize [ngModel]="prompt" (ngModelChange)="prompt = $event"
+								class="w-full text-[13px] resize-none bg-white border border-[#BABFC7] placeholder:text-gray-400 text-black rounded-2xl pl-4 pr-16 pt-3 pb-3 focus:outline-none"
+								placeholder="Start typing..."></textarea> -->
+							<textarea [(ngModel)]="prompt" class="w-full text-[13px] bg-white border border-[#BABFC7] placeholder:text-gray-400 
+												text-black rounded-2xl pl-4 pr-10 pt-3 pb-3 focus:outline-none leading-5
+												resize-none overflow-y-auto" placeholder="Start typing...">
+							</textarea>
+							<!-- rows="1" [style.height.px]="textareaHeight"
+								(input)="adjustHeight($event)" -->
+							<!-- Right side actions -->
+							<div class="absolute right-2 bottom-2 flex items-center gap-3 pb-1 text-xs text-slate-400">
+								<button (click)="send()"
+									class="bg-[#9810fa] text-white cursor-pointer rounded-full w-8 h-8 flex items-center justify-center">
+									<mat-icon class="custom-icon pl-0.5">send</mat-icon>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</div>

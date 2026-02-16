@@ -1,0 +1,30 @@
+<div class="section">
+  <div class="card-outer">
+    <div class="flex  gap-4 justify-between items-center shadow-sm  pl-5 pr-5  min-h-[54px] bg-white">
+      <!-- <p class="font-semibold text-[16px] text-[#2C224C] ">Settings</p> -->
+      <p class="font-semibold text-[16px] text-[#2C224C]"
+        [ngClass]="{ 'md:pl-[10px] pl-[37px]': !toggelSidebar, 'pl-0': toggelSidebar }">Settings</p>
+    </div>
+    <div class="overflow-hidden h-[calc(100dvh-80px)] custom-scrollbar p-5  pt-[46px] px-[26px]">
+      <div class="border border-gray-300 shadow-md rounded bg-white">
+        <mat-tab-group [selectedIndex]="selectedTabIndex" dynamicHeight>
+          <mat-tab label="Profile">
+            <div class="max-h-[calc(100dvh-180px)] md:max-h-full overflow-y-auto">
+              <app-user-profile></app-user-profile>
+            </div>
+          </mat-tab>
+          <mat-tab label="Security">
+            <app-update-password />
+          </mat-tab>
+          <mat-tab label="Accounts">
+            <app-email-accounts />
+          </mat-tab>
+          <mat-tab label="AI Configuration">
+            <app-ai-configuration />
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+
+  </div>
+</div>

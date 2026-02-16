@@ -1,0 +1,136 @@
+<div class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+  <div class="relative bg-white shadow-lg
+         w-full h-full md:w-full md:max-w-[60vw] md:h-[70vh] md:max-h-[95vh] flex flex-col md:rounded-[10px]">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center shadow-sm p-3 sticky top-0 z-10 ">
+      <!-- Mobile: Back Arrow -->
+      <button type="button" class="block md:hidden" (click)="onClose()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+
+      <h2 class="text-[16px] font-semibold text-center flex-1">
+        {{ header }} Customer
+      </h2>
+
+      <!-- Desktop: Close Button -->
+      <button type="button" class="hidden md:block" (click)="onClose()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- CONTENT (scrollable only here) -->
+    <div class="flex-1 overflow-y-auto p-4">
+      <form [formGroup]="companyForm" id="companyForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Company name and address -->
+        <div class="flex gap-4 md:flex-row flex-col">
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label class="text-[16px]">Company Name</mat-label>
+            <input matInput class="text-[13px]" [formControl]="companyName" placeholder="Company Name" />
+            @if (companyName.touched && companyName.invalid) {
+            <mat-error class="text-[13px]">Company Name is required.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label class="text-[16px]">Company Address</mat-label>
+            <input matInput class="text-[13px]" [formControl]="companyAddress" placeholder="Company Address" />
+            @if (companyAddress.touched && companyAddress.invalid) {
+            <mat-error class="text-[13px]">Company Address is required.</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Contacts header -->
+        <div class="flex justify-between items-center">
+          <h3 class="text-[16px] font-semibold">Contacts</h3>
+          <button type="button" (click)="addContact()"
+            class="cursor-pointer text-[16px] flex items-center gap-2 px-4 py-2 bg-[#9810fa] text-white rounded">
+            <mat-icon>add</mat-icon> Add Row
+          </button>
+        </div>
+
+        <!-- Contact list -->
+        <div formArrayName="contacts" class="space-y-2">
+          @for (contact of contacts.controls; track i; let i = $index) {
+          <div [formGroupName]="i" class="bg-gray-100 p-4 rounded relative">
+            <!-- Remove contact -->
+            <div class="absolute right-2 top-2 text-red-600">
+              <button mat-icon-button type="button" (click)="removeContact(i)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+              <!-- Full Name -->
+              <mat-form-field appearance="fill" class="w-full">
+                <mat-label>Full Name</mat-label>
+                <input matInput formControlName="fullName" placeholder="Full Name" />
+                @if (contact.get('fullName')?.touched && contact.get('fullName')?.invalid) {
+                <mat-error>Full Name is required.</mat-error>
+                }
+              </mat-form-field>
+
+              <!-- Phone Number -->
+              <mat-form-field appearance="fill" class="w-full">
+                <mat-label>Phone Number</mat-label>
+                <input matInput formControlName="phoneNumber" placeholder="1234567890" />
+                @if (contact.get('phoneNumber')?.touched && contact.get('phoneNumber')?.invalid) {
+                <mat-error>
+                  @if (contact.get('phoneNumber')?.errors?.['required']) {
+                  Phone Number is required.
+                  }
+                  @if (contact.get('phoneNumber')?.errors?.['pattern']) {
+                  Enter a valid phone number.
+                  }
+                </mat-error>
+                }
+              </mat-form-field>
+
+              <!-- Email -->
+              <mat-form-field appearance="fill" class="w-full">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" placeholder="email@example.com" />
+                @if (contact.get('email')?.touched && contact.get('email')?.invalid) {
+                <mat-error>
+                  @if (contact.get('email')?.errors?.['required']) {
+                  Email is required.
+                  }
+                  @if (contact.get('email')?.errors?.['pattern']) {
+                  Invalid email format.
+                  }
+                </mat-error>
+                }
+              </mat-form-field>
+
+              <!-- Send Notification -->
+              <div class="flex items-center mt-4 md:mt-0">
+                <mat-checkbox formControlName="sendNotification">
+                  <span class="text-[16px]">Send Notifications</span>
+                </mat-checkbox>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </form>
+    </div>
+
+    <!-- FOOTER (Sticky Save button on Mobile) -->
+    <div class="p-4 bottom-0 z-10 md:relative md:bottom-auto">
+      <div class="text-center">
+        <button type="submit" form="companyForm"
+          class="h-10 px-4 rounded-[4px] flex justify-center items-center cursor-pointer bg-[#9810fa] text-white w-full md:w-auto">
+          <span>Save</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading overlay -->
+    @if (isLoading) {
+    <div class="flex justify-center items-center absolute inset-0 bg-[#33333399]">
+      <mat-spinner [diameter]="50" class="custom-spinner"></mat-spinner>
+    </div>
+    }
+  </div>
+</div>

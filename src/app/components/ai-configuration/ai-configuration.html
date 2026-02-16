@@ -1,0 +1,33 @@
+<div class="p-4">
+    <div class="mb-4">
+        <label class="font-semibold text-[16px]">AI Configuration</label>
+    </div>
+    <label for="emailText" class="block text-[13px] text-[#9810fa] mb-1">
+        Email Reply Prompt
+    </label>
+    <textarea rows="4" maxlength="500" [(ngModel)]="promptText" (input)="onInput($event)"
+        class="w-full text-[13px] h-full bg-white border-2 border-[#9810fa] text-black p-4 rounded-lg focus:outline-none placeholder-gray-400"
+        placeholder="Enter your prompt..."></textarea>
+
+    <!-- Counter & Error Message -->
+    <div class="flex mt-1 text-sm justify-between">
+        <div class="text-red-500 ">
+            @if(errorMsg !== '') {
+            <span>Limit exceeded!</span>
+            }
+        </div>
+        <div class="">
+            {{ promptText.length }}/500
+        </div>
+    </div>
+    <div class="col-span-2 mt-4">
+        <button type="submit" (click)="save()"
+            class="h-10 px-4 rounded-[4px] flex justify-center items-center cursor-pointer btn-secondary font-semibold text-[14px] text-white text-center min-w-[70px]">
+           @if (loading) {
+        <mat-spinner [diameter]="24" class="white-custom-spinner"></mat-spinner>
+        } @else {
+        <span>Save</span>
+        }
+        </button>
+    </div>
+</div>

@@ -1,0 +1,146 @@
+<div class="fixed inset-0 flex items-start sm:items-center justify-center z-50 bg-[black/50] backdrop-blur-md">
+  <div class="max-h-screen w-full sm:w-auto overflow-y-auto rounded-[10px]">
+    <div
+      class="bg-[#2c2155] sm:w-[400px] w-[calc(100%-30px)] mt-[80px] mb-[15px] sm:mt-0 rounded-[10px] shadow-lg relative min-h-[414px] text-center mx-auto">
+
+      <div class="px-4 pb-5 pt-5 sm:p-5">
+        <h1 class="text-[22px] font-[600] leading-[33px] sm:text-[28px] sm:leading-[42px] mt-[24px] text-[#fff]">
+          Register</h1>
+        <p class="text-sm text-[#FFFFFF66]">Kindly fill in this form to register</p>
+
+        <form class="mt-6" [formGroup]="signupForm">
+          <!-- fullName -->
+          <div class="mt-4">
+            <label class="block text-[14px] font-[500] leading-[21px] text-start text-[#fff]">Full Name</label>
+            <div class="relative mt-1">
+              <input type="text" formControlName="fullName" placeholder="Enter your fullName"
+                class="text-[14px] font-[300] leading-[14px] w-full px-[10px] h-[38px] text-white bg-transparent focus:outline-none focus:ring-1 focus:ring-[#9810fa] input-brdr" />
+              <span class="material-icons absolute right-3 top-2 text-white">person</span>
+            </div>
+            @if ((f['fullName'].touched || signupForm.dirty) && f['fullName'].errors) {
+            <div class="text-red-500 text-sm mt-1 text-left">
+              @if (f['fullName'].errors['required']) {
+              <span>Full Name is required</span>
+              }
+              @if (f['fullName'].errors['minlength']) {
+              <span>Full Name must be at least 4 characters</span>
+              }
+            </div>
+            }
+
+          </div>
+
+          <!-- Email -->
+          <div class="mt-4">
+            <label class="block text-[14px] font-[500] leading-[21px] text-start text-[#fff]">Email Address</label>
+            <div class="relative mt-1">
+              <input type="email" formControlName="email" placeholder="Enter your email"
+                class="text-[14px] font-[300] leading-[14px] w-full px-[10px] h-[38px] text-white bg-transparent focus:outline-none focus:ring-1 focus:ring-[#9810fa] input-brdr" />
+              <span class="material-icons absolute right-3 top-2 text-white">mail</span>
+            </div>
+            @if (f['email'].touched && f['email'].errors) {
+            <div class="text-red-500 text-sm mt-1 text-left">
+              @if (f['email'].errors['required']) {
+              <span>Email is required</span>
+              }
+              @if (f['email'].errors['email']) {
+              <span>Enter a valid email</span>
+              }
+            </div>
+            }
+
+          </div>
+
+          <!-- Password -->
+          <div class="mt-4">
+            <label class="block text-[14px] font-[500] leading-[21px] text-start text-[#fff]">Password</label>
+            <div class="relative mt-1">
+              <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
+                placeholder="Enter your password"
+                class="text-[14px] font-[300] leading-[14px] w-full px-[10px] h-[38px] text-white bg-transparent focus:outline-none focus:ring-1 focus:ring-[#9810fa] input-brdr" />
+              <span class="material-icons absolute right-3 top-2 text-white cursor-pointer"
+                (click)="showPassword = !showPassword">
+                {{ showPassword ? 'visibility_off' : 'visibility' }}
+              </span>
+            </div>
+            @if (f['password'].touched && f['password'].errors) {
+            <div class="text-red-500 text-sm mt-1 text-left">
+              @if (f['password'].errors['required']) {
+              <span>Password is required</span>
+              }
+              @if (f['password'].errors['minlength']) {
+              <span>Password must be at least 8 characters</span>
+              }
+              @if (f['password'].errors['pattern']) {
+              <span>
+                Password must contain 1 uppercase, 1 lowercase, 1 number, and 1 special character
+              </span>
+              }
+            </div>
+            }
+
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="mt-4">
+            <label class="block text-[14px] font-[500] leading-[21px] text-start text-[#fff]">Confirm Password</label>
+            <div class="relative mt-1">
+              <input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword"
+                placeholder="Confirm your password"
+                class="text-[14px] font-[300] leading-[14px] w-full px-[10px] h-[38px] text-white bg-transparent focus:outline-none focus:ring-1 focus:ring-[#9810fa] input-brdr" />
+              <span class="material-icons absolute right-3 top-2 text-white cursor-pointer"
+                (click)="showConfirmPassword = !showConfirmPassword">
+                {{ showConfirmPassword ? 'visibility_off' : 'visibility' }}
+              </span>
+            </div>
+            @if (f['confirmPassword'].touched && (f['confirmPassword'].errors || signupForm.errors?.['mismatch'])) {
+            <div class="text-red-500 text-sm mt-1 text-left">
+              @if (f['confirmPassword'].errors?.['required']) {
+              <span>Confirm password is required</span>
+              }
+              @if (signupForm.errors?.['mismatch'] && !f['confirmPassword'].errors?.['required']) {
+              <span>Passwords must match</span>
+              }
+            </div>
+            }
+
+          </div>
+
+          <!-- Terms Checkbox -->
+          <div class="flex items-start gap-2 mt-4">
+            <input type="checkbox" formControlName="terms"
+              class="h-4 w-8 border-[#FFFFFF1A] rounded cursor-pointer background-[transparent] border-2 mt-[6px]" />
+            <p class="text-sm text-white text-left">
+              By creating an account, you agree to the
+              <a href="/pdf/Terms&Condition.pdf" target="_blank" class="text-[#5D5BE2] underline">Terms and
+                conditions</a> and
+              <a href="/pdf/PrivacyPolicy.pdf" target="_blank" class="text-[#5D5BE2] underline">Privacy policy</a>.
+            </p>
+          </div>
+          @if (f['terms'].touched && f['terms'].errors) {
+          <div class="text-red-500 text-sm mt-1 text-left">
+            You must accept the terms.
+          </div>
+          }
+
+          <div class="mt-3">
+            <!-- Submit Button -->
+            <button type="button" (click)="handleSubmit($event)" [disabled]="isLoading || signupForm.invalid"
+              class="flex w-full items-center justify-center  h-12 px-3 rounded-[4px] cursor-pointer btn-secondary font-semibold text-[14px] leading-[20px] text-[#fff]">
+              <ng-container *ngIf="isLoading">
+                <mat-spinner [diameter]="24" class="white-custom-spinner"></mat-spinner>
+              </ng-container>
+              <span *ngIf="!isLoading">Ragister</span>
+            </button>
+          </div>
+
+          <!-- Switch to login -->
+          <p class="text-sm font-light pt-3 text-[#FFFFFF66]">
+            Already have an account?
+            <span class="text-white cursor-pointer hover:text-[#5D5BE2]" (click)="triggerLogin()">Log in</span>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,90 @@
+@import "tailwindcss";
+/* @import 'quill/dist/quill.core.css'; */
+@import 'quill/dist/quill.snow.css';
+/* @import 'quill/dist/quill.bubble.css'; */
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  margin: 0px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar,.ql-container.ql-snow {
+  scrollbar-width: thin;
+  scrollbar-color: #CCB1F8 transparent;
+  overflow-y: auto;
+  overflow-y: auto;
+}
+
+.custom-scrollbar::-webkit-scrollbar, .ql-container.ql-snow::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track, .ql-container.ql-snow::-webkit-scrollbar {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb, .ql-container.ql-snow::-webkit-scrollbar {
+  background-color: #CCB1F8;
+  border-radius: 6px;
+  background-clip: content-box;
+  border: 2px solid transparent;
+}
+
+input::placeholder {
+  color: #FFFFFF66;
+}
+
+.btn-primary:hover {
+  box-shadow: 0px 1px 1px 0px #2C224C0A;
+}
+
+.btn-secondary {
+  /* background-color: #9810fa; */
+  /* background-color: hsl(277, 95%, 52%); */
+  background-color: hsla(277, 95%, 52%, 1);
+}
+
+.btn-secondary:hover {
+  box-shadow: 0px 1px 1px 0px #2C224C0A;
+  background-color: #940ef3;
+}
+
+.btn-tertiary:hover {
+  box-shadow: 0px 8px 20px -6px #2C224C0D;
+}
+
+.input-brdr {
+  border: 1px solid #FFFFFF1A;
+  border-radius: 5px;
+}
+
+.ql-container.ql-snow {
+  font-family: 'Inter', sans-serif;
+  border: 0px solid;
+}
+
+.ql-toolbar.ql-snow {
+  border: 0px solid;
+  border-top: 1px solid #d1d5dc;
+}
+
+.custom-spinner circle {
+  stroke: #9810fa;
+}
+
+.white-custom-spinner circle {
+    stroke: #fff;
+}
+.changeLink a {
+  color: rgb(9, 9, 225);
+}
+
+.overflow-unset {
+  overflow: unset !important;
+}
+

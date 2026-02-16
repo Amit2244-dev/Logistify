@@ -1,0 +1,15 @@
+<!-- <app-header></app-header> -->
+
+<div class="layout-container">
+  <div *ngIf="isLoadingUser" class="z-[99999] absolute h-full w-full flex justify-center items-center bg-[#000000f7]">
+    <ng-container class="">
+      <mat-spinner [diameter]="50" class="custom-spinner"></mat-spinner>
+    </ng-container>
+  </div>
+  <app-sidebar [user]="user" *ngIf="!isLoadingUser"></app-sidebar>
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+<!-- <app-footer></app-footer> -->

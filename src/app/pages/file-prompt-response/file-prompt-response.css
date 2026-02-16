@@ -1,0 +1,8 @@
+.card-outer {
+  border-radius: 8px;
+  background-color: #F8F7FA;
+  height: calc(100% - 16px);
+}
+.card-inner {
+  height: calc(100% - 50px);
+}

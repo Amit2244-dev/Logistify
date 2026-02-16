@@ -1,0 +1,151 @@
+<div class="layout-wrapper">
+	<!-- Sidebar -->
+	<div class="block md:hidden">
+		<button (click)="toggleMobileSidebar()"
+			class="cursor-pointer p-0 h-[48px] sidebar-btn rounded-[4px] flex gap-4 items-center sidebar-btn w-full absolute pl-[18px] top-1 !bg-transparent md:z-[99]  z-[49]">
+			<img *ngIf="isSidebarExpanded" class="h-[34px] w-[34px] z-10" [src]="sidebarTopBottom.logo" alt="logo" />
+		</button>
+	</div>
+
+	<div
+		[ngClass]="{'w-[72px] px-[8px]': isSidebarExpanded, 'w-[250px] px-[20px]': !isSidebarExpanded , 'hidden': !isMobileSidebarOpen}"
+		class="transition-all duration-300 h-full bg-[#2c2155] flex flex-col justify-between items-center">
+		<div class="flex flex-col gap-1 mt-4 w-full">
+			<button [ngClass]="{ 'justify-center': isSidebarExpanded, 'px-2': !isSidebarExpanded }"
+				class="cursor-pointer p-0 h-[48px] sidebar-btn rounded-[4px] flex gap-4 items-center sidebar-btn w-full">
+				<img *ngIf="isSidebarExpanded" class="h-[34px] w-[34px] hidden md:block" [src]="sidebarTopBottom.logo"
+					alt="logo" />
+				<img *ngIf="!isSidebarExpanded" [src]="sidebarTopBottom.logoWithText" alt="logo" />
+			</button>
+
+			<!-- for active linek add "active-link" class to button -->
+			<div [ngClass]="{'mt-4': !isSidebarExpanded }" class="md:mt-4">
+				<ng-container *ngFor="let item of sidebarTopIcons">
+					<button (click)="togglelink(item.label)"
+						[ngClass]="{ 'justify-center': isSidebarExpanded, 'px-2': !isSidebarExpanded, 'active-link': isActiveLink(item.label) }"
+						class="cursor-pointer p-0 h-[48px] sidebar-btn rounded-[4px] flex gap-4 mt-2 items-center sidebar-btn w-full">
+						<mat-icon aria-hidden="false" class="!h-5 !w-5 sidebar-icon !text-[20px]"
+							[attr.aria-label]="'Example icon ' + item.fontIcon " [fontIcon]="item.fontIcon"></mat-icon>
+						<span *ngIf="!isSidebarExpanded"
+							class="text-[14px] font-[500] text-[#fff] whitespace-nowrap">{{item.label}}</span>
+					</button>
+				</ng-container>
+			</div>
+			<div class="flex flex-col items-center gap-2 mt-1">
+				<div [ngClass]="{ 'w-[48px]': isSidebarExpanded, 'w-full': !isSidebarExpanded }" class="h-[2px] bg-[#48326B] ">
+				</div>
+				<button (click)="togglelink('settings')"
+					[ngClass]="{ 'justify-center': isSidebarExpanded, 'px-2': !isSidebarExpanded, 'active-link': isActiveLink('settings') }"
+					class="cursor-pointer p-0 h-[48px] sidebar-btn rounded-[4px] flex gap-4 items-center sidebar-btn w-full">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="#A6A3AF" xmlns="http://www.w3.org/2000/svg">
+						<path
+							d="m19.44 12.99-.01.02c.04-.33.08-.67.08-1.01s-.03-.66-.07-.99l.01.02 2.44-1.92-2.43-4.22-2.87 1.16.01.01c-.52-.4-1.09-.74-1.71-1h.01L14.44 2H9.57l-.44 3.07h.01c-.62.26-1.19.6-1.71 1l.01-.01-2.88-1.17-2.44 4.22 2.44 1.92.01-.02c-.04.33-.07.65-.07.99s.03.68.08 1.01l-.01-.02-2.1 1.65-.33.26 2.43 4.2 2.88-1.15-.02-.04c.53.41 1.1.75 1.73 1.01h-.03L9.58 22h4.85s.03-.18.06-.42l.38-2.65h-.01c.62-.26 1.2-.6 1.73-1.01l-.02.04 2.88 1.15 2.43-4.2s-.14-.12-.33-.26zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5">
+						</path>
+					</svg>
+					<span *ngIf="!isSidebarExpanded" class="text-[14px] font-[500] text-[#fff] whitespace-nowrap">Settings</span>
+				</button>
+			</div>
+
+		</div>
+
+		<div class="flex flex-col gap-[12px] mb-[4px] mt-[10px] w-full">
+			<div>
+				<div *ngIf="sessionService.isAuthenticated()"
+					[ngClass]="{'justify-center': isSidebarExpanded, '': !isSidebarExpanded }"
+					class="flex h-[56px] svg-hover-image">
+					<div [ngClass]="{ 'justify-center': isSidebarExpanded, '': !isSidebarExpanded }"
+						class="flex gap-2 flex-1 cursor-pointer p-0 sidebar-btn rounded-[4px] items-center sidebar-btn w-full">
+						<img [src]="sidebarTopBottom.avatar" class="h-10 w-10 cursor-pointer" alt="Profile" />
+						<!-- <img [src]="sidebarTopBottom.avatar" class="h-10 w-10 cursor-pointer" alt="Profile" (click)="openLoginPopup()" /> -->
+						<div *ngIf="!isSidebarExpanded" class="w-full flex justify-between">
+							<div>
+								<p class="text-[15px] font-[400] leading-[24px] text-[#fff]">{{user?.fullName || '' | truncate: 18}}</p>
+								<p class="text-[13px] font-[500] leading-[16px] text-[#A6A3AF]">{{user?.email|| '' | truncate: 18}}
+								</p>
+							</div>
+							<svg (click)="logout()" width="16" height="16" viewBox="0 0 20 20" fill="#A6A3AF"
+								xmlns="http://www.w3.org/2000/svg" class="self-center mr-1">
+								<path xmlns="http://www.w3.org/2000/svg"
+									d="M3.77778 18C3.28889 18 2.87052 17.8261 2.52267 17.4782C2.17481 17.1304 2.00059 16.7117 2 16.2222V12.6667H3.77778V16.2222H16.2222V3.77778H3.77778V7.33333H2V3.77778C2 3.28889 2.17422 2.87052 2.52267 2.52267C2.87111 2.17481 3.28948 2.00059 3.77778 2H16.2222C16.7111 2 17.1298 2.17422 17.4782 2.52267C17.8267 2.87111 18.0006 3.28948 18 3.77778V16.2222C18 16.7111 17.8261 17.1298 17.4782 17.4782C17.1304 17.8267 16.7117 18.0006 16.2222 18H3.77778ZM8.66667 14.4444L7.42222 13.1556L9.68889 10.8889H2V9.11111H9.68889L7.42222 6.84444L8.66667 5.55556L13.1111 10L8.66667 14.4444Z"
+									fill="#A19EA5" />
+							</svg>
+						</div>
+					</div>
+				</div>
+				<div *ngIf="isSignupOpen" class="w-full flex justify-between">
+					<button *ngIf="!isSidebarExpanded" type="button"
+						class="flex w-full items-center justify-center h-8 px-3 rounded-[4px] cursor-pointer bg-[#9810fa] font-semibold text-[14px] text-[#fff]"
+						(click)="toggleSignupPopupOpen()">
+						Login/Signup
+					</button>
+					<div class="flex flex-col items-center justify-center gap-2 mt-1" (click)="toggleSignupPopupOpen()">
+						<div *ngIf="isSidebarExpanded"
+							class="cursor-pointer p-0 h-[32px] w-[56px] sidebar-btn rounded-[4px] flex items-center justify-center bg-[#9810fa] ">
+							<!-- SVG Icon -->
+							<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="20" height="20" viewBox="0 0 256 256">
+								<g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
+									transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+									<path
+										d="M 36.137 34.78 c -9.589 0 -17.39 -7.801 -17.39 -17.39 C 18.747 7.801 26.548 0 36.137 0 s 17.39 7.801 17.39 17.39 C 53.527 26.979 45.726 34.78 36.137 34.78 z M 36.137 7 c -5.729 0 -10.39 4.661 -10.39 10.39 s 4.661 10.39 10.39 10.39 s 10.39 -4.661 10.39 -10.39 S 41.866 7 36.137 7 z"
+										style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: white; fill-rule: nonzero; opacity: 1;"
+										transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+									<path
+										d="M 11.721 90 c -1.933 0 -3.5 -1.567 -3.5 -3.5 V 61.756 c 0 -11.14 9.063 -20.203 20.203 -20.203 h 15.427 c 6.92 0 13.29 3.505 17.039 9.375 c 1.084 1.698 1.904 3.539 2.438 5.471 c 0.516 1.862 -0.577 3.791 -2.44 4.306 c -1.86 0.519 -3.791 -0.576 -4.306 -2.44 c -0.349 -1.258 -0.884 -2.459 -1.593 -3.568 c -2.456 -3.847 -6.62 -6.143 -11.138 -6.143 H 28.424 c -7.28 0 -13.203 5.923 -13.203 13.203 V 86.5 C 15.221 88.433 13.654 90 11.721 90 z"
+										style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: white; fill-rule: nonzero; opacity: 1;"
+										transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+									<path
+										d="M 60.554 90 c -1.933 0 -3.5 -1.567 -3.5 -3.5 v -2.236 c 0 -1.933 1.567 -3.5 3.5 -3.5 s 3.5 1.567 3.5 3.5 V 86.5 C 64.054 88.433 62.486 90 60.554 90 z"
+										style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: white; fill-rule: nonzero; opacity: 1;"
+										transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+									<path
+										d="M 33.663 68.741 l 8.515 -8.515 c 1.367 -1.367 3.582 -1.367 4.949 0 c 1.367 1.366 1.367 3.583 0 4.949 l -2.54 2.54 h 33.693 c 1.933 0 3.5 1.567 3.5 3.5 s -1.567 3.5 -3.5 3.5 H 44.586 l 2.541 2.541 c 1.367 1.367 1.367 3.583 0 4.949 c -0.684 0.684 -1.579 1.025 -2.475 1.025 s -1.792 -0.342 -2.475 -1.025 l -8.515 -8.516 C 32.295 72.323 32.295 70.107 33.663 68.741 z"
+										style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(246, 242, 242); fill-rule: nonzero; opacity: 1;"
+										transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+								</g>
+							</svg>
+						</div>
+					</div>
+
+				</div>
+				<div class="flex flex-row justify-center mt-2">
+					<button (click)="toggleSidebar()"
+						class="cursor-pointer p-0 h-[32px] w-[56px] sidebar-btn rounded-[4px] flex justify-center sidebar-btn items-center">
+						<svg *ngIf="isSidebarExpanded" width="24" height="24" viewBox="0 0 24 24" fill="none"
+							xmlns="http://www.w3.org/2000/svg">
+							<path
+								d="M8.76689 15.2084L5.88294 12.3254L8.76689 9.44249L7.32542 8L3 12.3254L7.32542 16.6508L8.76689 15.2084Z"
+								fill="#A6A3AF" />
+							<path
+								d="M15.2331 9.44249L18.117 12.3254L15.2331 15.2084L16.6746 16.6508L21 12.3254L16.6746 8L15.2331 9.44249Z"
+								fill="#A6A3AF" />
+						</svg>
+						<svg *ngIf="!isSidebarExpanded" width="24" height="24" viewBox="0 0 24 24" fill="none"
+							xmlns="http://www.w3.org/2000/svg">
+							<path d="M3 9.44249L5.88396 12.3254L3 15.2084L4.44147 16.6508L8.76689 12.3254L4.44147 8L3 9.44249Z"
+								fill="#A6A3AF" />
+							<path
+								d="M20.534 15.2084L17.65 12.3254L20.534 9.44249L19.0925 8L14.7671 12.3254L19.0925 16.6508L20.534 15.2084Z"
+								fill="#A6A3AF" />
+						</svg>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="isTwoFactorAuthOpen">
+		<app-two-factor-auth *ngIf="isTwoFactorAuthOpen" (onClose)="toggleTwoFactorAuth()" />
+	</div>
+
+	<div *ngIf="isSignupOpen">
+		<app-signup (onClose)="toggleSignupPopupClose()" (onLoginTrigger)="toggleLoginPopup()" />
+	</div>
+	<div *ngIf="isLoginOpen">
+		<app-login *ngIf="isLoginOpen" (onClose)="toggleLoginPopup()" (onTwoFactorAuthTrigger)="toggleTwoFactorAuth()"
+			(onSignUpTrigger)="toggleSignupPopupOpen()" (onResetPasswordTrigger)="toggleResetPasswordPopup()" />
+	</div>
+	<div *ngIf="isResetPasswordOpen">
+		<app-forgot-password *ngIf="isResetPasswordOpen" (openSignup)="toggleResetPopupOpenLogin()"
+			(onClose)="toggleResetPasswordPopup()" (onSignUpTrigger)="toggleLoginPopup()" />
+	</div>
+</div>

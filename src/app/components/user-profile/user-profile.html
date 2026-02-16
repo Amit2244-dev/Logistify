@@ -1,0 +1,87 @@
+<div class="w-full p-4 flex justify-center items-center   ">
+  <form class="w-full" [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+
+    <!-- Title -->
+    <div class="mb-4 ">
+      <label class="font-semibold text-[16px] text-[#2C224C] ">Personal Information</label>
+    </div>
+
+    <div *ngIf="!user" class="flex justify-center items-center   ">
+      <mat-spinner [diameter]="40" class="custom-spinner"></mat-spinner>
+    </div>
+    <div *ngIf="user">
+      <!-- Email -->
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" placeholder="Enter email" readonly />
+      </mat-form-field>
+
+      <!-- Full Name -->
+      <mat-form-field appearance="fill" class="w-full mt-4">
+        <mat-label>Full Name</mat-label>
+        <input matInput formControlName="fullName" placeholder="Enter full name" />
+      </mat-form-field>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-black">
+
+        <!-- Phone Number -->
+        <mat-form-field appearance="fill" class="w-full pt-4">
+          <mat-label>Phone Number</mat-label>
+          <input matInput formControlName="mobilePhone" placeholder="Phone number" />
+        </mat-form-field>
+
+        <!-- Organizations -->
+        <mat-form-field appearance="fill" class="w-full pt-4">
+          <mat-label>Organization Name</mat-label>
+          <mat-select formControlName="organizationId" placeholder="Select Organization">
+            <mat-option *ngFor="let option of organizationOptions" [value]="option.id">
+              {{ option.key }}
+            </mat-option>
+
+            <!-- Fallback option -->
+            <mat-option *ngIf="isInvalidOrg()" [value]="profileForm.get('organizationId')?.value">
+              My organization
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
+
+      </div>
+
+      <!-- Address Group -->
+      <div formGroupName="address" class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 text-black">
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Address Line 1</mat-label>
+          <input matInput formControlName="line1" placeholder="Address Line 1" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Address Line 2</mat-label>
+          <input matInput formControlName="line2" placeholder="Address Line 2" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>City</mat-label>
+          <input matInput formControlName="city" placeholder="City" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Zip Code</mat-label>
+          <input matInput formControlName="zipCode" placeholder="Zip Code" />
+        </mat-form-field>
+      </div>
+
+      <!-- Save Button -->
+      <div class="col-span-2 mt-4">
+        <button type="submit" [disabled]="isLoading"
+          class="h-10 px-4 rounded-[4px] flex justify-center items-center cursor-pointer btn-secondary font-semibold text-[14px] text-white text-center min-w-[70px]">
+          @if (isLoading) {
+          <mat-spinner [diameter]="24" class="white-custom-spinner"></mat-spinner>
+          } @else {
+          <span>Save</span>
+          }
+        </button>
+      </div>
+    </div>
+  </form>

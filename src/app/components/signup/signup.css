@@ -1,0 +1,10 @@
+/* Applies to the wrapper class passed in panelClass */
+.snackbar-success .mdc-snackbar__surface {
+  background-color: #4caf50 !important;
+  color: #ffffff !important;
+}
+
+.snackbar-error .mdc-snackbar__surface {
+  background-color: #f44336 !important;
+  color: #ffffff !important;
+}

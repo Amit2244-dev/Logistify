@@ -1,0 +1,279 @@
+<div
+  class="fixed inset-0 flex items-start sm:items-center justify-center z-[50] bg-[black/50] backdrop-blur-md md:h-auto h-screen"
+  (click)="handleClose()">
+  <div class="max-h-screen w-full md:h-auto h-screen sm:w-auto rounded-[10px]" (click)="$event.stopPropagation()">
+    <div
+      class="bg-[#2c2155] md:max-w-[900px] md:my-8 w-full h-full overflow-y-auto sm:mt-0 md:rounded-[10px] rounded-none shadow-lg relative min-h-[414px] mx-auto">
+
+      <!-- Close Button -->
+      <button class="absolute top-[12px] md:right-5 hidden md:block  cursor-pointer !z-[9999]" (click)="handleClose()">
+        <mat-icon class="text-[#5D5BE2] !text-[16px]">
+          close
+        </mat-icon>
+      </button>
+
+      <button class="absolute top-[12px] md:right-5 block md:hidden cursor-pointer !z-[9999]" (click)="handleClose()">
+        <mat-icon class="text-[#5D5BE2] !text-[16px]">
+          arrow_back
+        </mat-icon>
+      </button>
+
+      <div class="mx-auto rounded-lg shadow-md border border-gray-200 bg-white md:h-auto h-screen overflow-auto">
+        <!-- Header -->
+        <div class="px-6 py-2 border-b border-gray-300 bg-white sticky top-0">
+          <h3 class="text
+          -[16px] font-semibold text-gray-800">Reply</h3>
+        </div>
+        <div class="overflow-auto h-full md:max-h-[calc(100dvh-144px)] max-h-[calc(100dvh-86px)]">
+          <!-- Form -->
+          <div class="px-6 pt-3 space-y-3 mb-2">
+            <!-- To -->
+            <div class=" pt-0">
+              <div class="flex items-center gap-2">
+                <label class="text-[16px] text-gray-500 w-[60px]">To:</label>
+                <div class="flex flex-wrap gap-2 border-b border-gray-300 flex-1">
+                  @for (email of toEmails; track email) {
+                  <span class="flex border-2 justify-center items-center px-3 rounded-full text-blue-500 text-[13px]">
+                    {{ email }}
+                    <span (click)="toEmails = removeEmail(toEmails, email)"
+                      class="ml-2 h-[25px] cursor-pointer hover:text-purple-900">
+                      <mat-icon>close</mat-icon>
+                    </span>
+                  </span>
+                  }
+
+                  <input type="text" [(ngModel)]="newToInput"
+                    (keydown.enter)="toEmails = addEmail(toEmails, newToInput); newToInput=''"
+                    (focus)="onFocusToField()" placeholder="Enter email and press Enter"
+                    class="flex-1 outline-none text-sm min-w-[180px]" />
+                </div>
+                <div *ngIf="showCcBccOptions" class="ml-2 text-[16px] text-blue-700 cursor-pointer">
+                  <button class="cursor-pointer" (click)="toggleCc()">Cc</button>
+                  <button (click)="toggleBcc()" class="ml-2 cursor-pointer">Bcc</button>
+                </div>
+              </div>
+
+              <!-- CC -->
+              <div *ngIf="showCcField" class="flex items-center mt-2  gap-2">
+                <label class="text-[16px] text-gray-500 w-[60px]">Cc:</label>
+                <div class="flex flex-wrap gap-2 border-b border-gray-300 flex-1">
+                  @for (email of ccEmails; track email) {
+                  <span class="flex items-center px-3 border-2 rounded-full text-blue-500 text-[13px]">
+                    {{ email }}
+                    <span (click)="ccEmails = removeEmail(ccEmails, email)"
+                      class="ml-2 h-[25px] cursor-pointer hover:text-purple-900">
+                      <mat-icon>close</mat-icon>
+                    </span>
+                  </span>
+                  }
+
+                  <input type="text" [(ngModel)]="newCcInput"
+                    (keydown.enter)="ccEmails = addEmail(ccEmails, newCcInput); newCcInput=''"
+                    placeholder="Enter email and press Enter" class="flex-1 outline-none text-[13px] min-w-[180px]" />
+                </div>
+              </div>
+
+              <!-- BCC -->
+              <div *ngIf="showBccField" class="flex items-center mt-2  gap-2">
+                <label class="text-[16px] text-gray-500 w-[60px]">Bcc:</label>
+                <div class="flex flex-wrap gap-2 border-b border-gray-300 flex-1">
+                  @for (email of bccEmails; track email) {
+                  <span class="flex items-center border-2 px-3 rounded-full text-blue-500 text-[13px]">
+                    {{ email }}
+                    <span (click)="bccEmails = removeEmail(bccEmails, email)"
+                      class="ml-2 h-[25px] cursor-pointer hover:text-purple-900">
+                      <mat-icon>close</mat-icon>
+                    </span>
+                  </span>
+                  }
+
+                  <input type="text" [(ngModel)]="newBccInput"
+                    (keydown.enter)="bccEmails = addEmail(bccEmails, newBccInput); newBccInput=''"
+                    placeholder="Enter email and press Enter" class="flex-1 outline-none text-[13px] min-w-[180px]" />
+                </div>
+              </div>
+
+              <!-- Subject -->
+              <div class="flex items-center mt-2  gap-2">
+                <label class="text-[16px] text-gray-500 w-[60px]">Subject:</label>
+                <input type="text" [(ngModel)]="subject"
+                  class="flex-1 border-b text-[13px] border-gray-300 focus:outline-none focus:border-purple-500" />
+              </div>
+            </div>
+
+            <!-- Auto-generated Section -->
+            <div class="flex justify-between items-center mb-0">
+              <p class="text-[16px] font-[700] leading-[20px] text-gray-800 flex">Summary</p>
+            </div>
+
+            <div class="border-0 border-gray-300 px-[15px] gap-1 flex justify-between"
+              [ngClass]="{'flex-row-reverse': editorDirection === 'rtl' }">
+              <div [ngClass]="{'flex justify-end': editorDirection === 'rtl' }">
+                <p [ngClass]="{ 'line-clamp-2': !isExpanded }" [dir]="editorDirection"
+                  class="text-[13px] font-[500] changeLink leading-[20px] text-[#1e2939] break-words transition-all duration-500 ease-in-out"
+                  [innerHTML]="sanitizedSummary">
+                </p>
+              </div>
+
+              @if (this.summary.length > 230) {
+              <div (click)="toggleExpand()"
+                class="text-[#9810fa] font-semibold cursor-pointer whitespace-nowrap flex justify-end"
+                [dir]="editorDirection === 'rtl' ? 'ltr' : 'rtl'">
+                <div>
+                  {{ isExpanded ? 'Read less' : 'Expand' }}
+                </div>
+              </div>
+              }
+            </div>
+
+
+            <!-- Editor -->
+            <div>
+              <div class="flex justify-between mb-1">
+                <p class="text-[16px] font-[700] leading-[20px] text-gray-800 mt-2">Response</p>
+                <div class="flex justify-center items-center gap-2">
+                  <mat-icon title="Generate New Response" *ngIf="!isFetchingNewResponse"
+                    class="bg-[#9810fa] cursor-pointer text-white rounded custom-icon !h-[32px] !w-[32px] flex justify-center p-1"
+                    (click)="generateNewResponseModel()">autorenew</mat-icon>
+                  <mat-icon title="Save to draft"
+                    class="bg-[#9810fa] cursor-pointer text-white rounded custom-icon !h-[32px] !w-[32px] flex justify-center p-1"
+                    (click)="saveToDraft()">edit_document</mat-icon>
+                </div>
+              </div>
+              <div *ngIf="isFetchingNewResponse"
+                class="flex overflow-hidden border-2 rounded p-6 justify-center border-[#9810fa]">
+                <div>
+                  <div class="inline-flex">
+                    <span class="text-[14px]">Generating response</span>
+                    <div class="animate-ellipsis-dot">.</div>
+                    <div class="animate-ellipsis-dot" [style]="{'animation-delay': '200ms'}">.</div>
+                    <div class="animate-ellipsis-dot" [style]="{'animation-delay': '400ms'}">.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="relative">
+                <div>
+                  <quill-editor #quillEditor *ngIf="!isFetchingNewResponse" [modules]="modules"
+                    [(ngModel)]="editorContent" [dir]="editorDirection"
+                    [styles]="{ height: '250px', textAlign: 'right' }"
+                    class="border border-gray-300 !flex flex-col-reverse mt-[-1px]"
+                    [ngClass]="{ 'quill-rtl': editorDirection === 'rtl' }"></quill-editor>
+                  <input type="file" #fileInput style="display: none" (change)="onFileSelected($event)" multiple />
+                </div>
+                <div>
+                  @if (newAttachments.length > 0) {
+                  <div class="mt-2 flex flex-wrap gap-2">
+                    @for (file of newAttachments; track $index) {
+                    <div class="bg-gray-100 text-[13px] px-2 rounded flex items-center shadow-sm">
+                      <mat-icon class="!text-xl mb-1 mr-1">insert_drive_file</mat-icon>
+                      <!-- class="cursor-pointer hover:text-blue-600" (click)="viewFiles(file.s3FileName)" -->
+                      <span>
+                        {{ file.name || file?.fileName }}
+                      </span>
+                      <button (click)="removeAttachment($index)" class="text-red-500 ml-2 hover:text-red-700">
+                        <mat-icon class="mt-1 cursor-pointer !text-[16px] !h-4 !w-4">close</mat-icon>
+                      </button>
+                    </div>
+                    }
+                  </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- privious emails -->
+          <div class="flex px-6 mb-2 items-center gap-2 ">
+            <div class=" bg-[#F8F8F8] w-full p-2 flex  gap-2  rounded py-2 border-1 border-[#DDE2EB]">
+              <label class="text-[16px] w-[100px] text-gray-800">Tags:</label>
+              <div class="w-full relative">
+                <!-- Input Field save btn -->
+                <div class="flex gap-4">
+                  <div class="w-full relative">
+                    @if (filteredOptions.length) {
+                    <ul
+                      class="absolute bottom-full mb-1 z-10 w-full bg-white border border-gray-300 rounded shadow max-h-48 overflow-y-auto cursor-pointer">
+                      @for (option of filteredOptions; track $index) {
+                      <li (click)="selectOption(option)" class="px-4 py-2 hover:bg-[#e4e5e6]">
+                        {{ option }}
+                      </li>
+                      }
+                    </ul>
+                    }
+                    <div class="relative">
+                      <input type="text" (click)="onInputClick()" [(ngModel)]="searchText" (input)="filterOptions()"
+                        (keydown)="handleKeydown($event)" placeholder="Type to search or add (use comma, or enter)"
+                        class="w-full px-4 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-[#6c1313] !placeholder-[#999]" />
+                      @if (filteredOptions.length) {
+                      <div (click)="closeDropdown()" class="absolute flex right-1 top-1 cursor-pointer text-[#9810fa]">
+                        <mat-icon>close</mat-icon>
+                      </div>
+                      }
+                    </div>
+
+                  </div>
+
+                  <!-- <button *ngIf="tags.length" (click)="saveTag()"
+                  class="px-3 py-1 w-[100px] rounded cursor-pointer bg-[#9810fa] text-[#fff]">
+                  <span>Save</span>
+                </button> -->
+                </div>
+                <div class="flex flex-wrap gap-2 pt-1">
+                  @for (item of tags; track $index) {
+                  <span class="flex border-2 justify-center items-center px-3 rounded-full text-blue-500 text-[13px]">
+                    {{ item }}
+                    <button (click)="removeTag(item)" class="ml-2 h-[25px] cursor-pointer hover:text-purple-900">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </span>
+                  }
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="px-6 mb-2">
+            @if (attachments.length > 0) {
+            <div class="mt-2 flex flex-wrap gap-2">
+              @for (file of attachments; track $index) {
+              <div class="bg-gray-100 text-[13px] px-2 rounded flex items-center shadow-sm">
+                <mat-icon class="!text-xl mb-1 mr-1">insert_drive_file</mat-icon>
+                <span class="cursor-pointer hover:text-blue-600" (click)="viewFiles(file.s3FileName)">
+                  {{ file.name || file?.fileName }}
+                </span>
+              </div>
+              }
+            </div>
+            }
+          </div>
+          <div class="px-6">
+            <button (click)="toggleExpandBody()" [title]="!isExpandedBody ? 'Expand Body' : 'Hide Body'"
+              class=" h-6 px-2 bg-gray-300 rounded-full cursor-pointer text-gray-500 hover:text-gray-700">
+              <mat-icon class="text-base">more_horiz</mat-icon>
+            </button>
+            <div *ngIf="isExpandedBody"
+              class="p-3 mb-2 rounded max-h-[50vh] overflow-y-auto bg-white text-[16px] leading-5 text-gray-900 border border-gray-300">
+              <p [dir]="editorDirection" [innerHTML]="safeBody" class="break-words changeLink text-[13px]"></p>
+            </div>
+          </div>
+          <!-- Footer -->
+        </div>
+        <div class="px-6 py-1 flex justify-end items-center border-t border-gray-300">
+          <button class="px-3 py-1 rounded cursor-pointer bg-[#9810fa] text-[#fff]" (click)="sendEmail()">
+            <span>Send</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-center items-center absolute h-full w-full bg-[#33333399] top-0 left-0" *ngIf="isLoading">
+      <ng-container>
+        <mat-spinner [diameter]="50" class="custom-spinner"></mat-spinner>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+@if (openNewResponseModel) {
+<app-ai-input-model [privData]="userInput" (save)="generateNewResponse($event)"
+  (onClose)="generateNewResponseModel()" />
+}

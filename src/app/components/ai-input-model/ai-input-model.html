@@ -1,0 +1,29 @@
+<!-- Fullscreen Modal UI -->
+<div class="fixed inset-0 flex items-start sm:items-center justify-center z-50 bg-[black/50] backdrop-blur-md"
+  (click)="handleClose()">
+  <div class="max-h-screen w-full sm:w-auto overflow-y-auto rounded-[10px]" (click)="$event.stopPropagation()">
+    <div
+      class="bg-[#fff]   w-[70vw] mt-[80px] mb-[15px] sm:mt-0 rounded-[10px] shadow-lg relative min-h-[100px] mx-auto">
+      <div class="flex items-start justify-between px-4 pt-4 gap-4">
+        <div class=" text-black font-semibold text-lg">
+          Please provide instructions to phrase a new response
+        </div>
+        <!-- Close Button -->
+        <button class="  cursor-pointer" (click)="handleClose()">
+          <mat-icon class="text-[#5D5BE2] !text-[16px] !h-auto !w-auto mt-[7px]">close</mat-icon>
+        </button>
+      </div>
+      <div class="relative p-4">
+        <textarea rows="5" [ngModel]="plainTextData" (ngModelChange)="privData = $event"
+          class="w-full h-full min-h-[18vh] bg-[#fff] border-2 border-[#9810fa] text-black p-4 rounded-lg focus:outline-none placeholder-gray-400"
+          placeholder="enter your prompt..."></textarea>
+        <div class="absolute right-7 bottom-7">
+          <button (click)="onSubmit()"
+            class="bg-[#9810fa] text-black cursor-pointer rounded-full w-10 h-10 flex items-center justify-center">
+            <mat-icon class="custom-icon pl-0.5">send</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
